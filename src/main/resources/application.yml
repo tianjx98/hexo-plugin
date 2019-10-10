@@ -1,0 +1,20 @@
+hexoRootPath: "/Users/tianjx98/blog/"
+password: 123
+
+server:
+  port: 80
+
+filePath:
+  hexoRoot: ${hexoRootPath}
+  hexoPublic: ${hexoRootPath}public/
+  hexoSource: ${hexoRootPath}source/_posts/
+
+spring:
+  devtools:
+    restart:
+      enabled: true
+  resources:
+    static-locations: classpath:/static/,file:${filePath.hexoSource},classpath:/,file:${filePath.hexoPublic}
+  thymeleaf:
+    prefix: file:${filePath.hexoPublic}
+    cache: false

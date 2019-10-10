@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑</title>
+</head>
+<body>
+<div th:replace="editor.html"></div>
+</body>
+<script>
+    $.ajax({
+        url: "/blog/get/[[${name}]]",
+        success:function (result) {
+            console.log(result);
+            setTitle(result['title']);
+            setTags(result['tags']);
+            setCategories(result['categories']);
+            setDate(result['date']);
+            setContent(result['content']);
+        }
+    });
+</script>
+</html>

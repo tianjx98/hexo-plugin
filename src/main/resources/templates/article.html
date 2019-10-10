@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/fragments.css">
+</head>
+<body>
+<div th:replace="${uri}"></div>
+<div th:replace="fragments :: edit"></div>
+<div th:replace="fragments :: add"></div>
+</body>
+
+</html>

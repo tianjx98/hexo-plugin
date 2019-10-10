@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/css/fragments.css">
+</head>
+<body>
+<a id='edit' th:fragment="edit" title='编辑' th:href="'/edit/'+${name}+'?uri='+${uri}" class="edit-back-to-top"><i
+        class="fa fa-pencil-square-o"></i></a>
+
+<a id='add' th:fragment="add" title="新建" href="/new" class="edit-back-to-top" style="bottom: 100px"><i
+        class="fa fa-plus" aria-hidden="true"></i></a>
+</body>
+
+</body>
+</body>
+
+</html>

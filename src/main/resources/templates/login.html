@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="/lib/jquery/index.js"></script>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+</head>
+<script src="/static/layui/layui.js"></script>
+<body>
+<div class="layui-container" style="width: 450px">
+    <div class="layui-row" style="margin-top: 50%">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="password" required lay-verify="required" placeholder="请输入密码"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">登录</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+    layui.use(['layer', 'form'], function () {
+        layui.form.on('submit(formDemo)', function (data) {
+            $.ajax({
+                url: "/loginProcess",
+                data: data.field,
+                method: "post",
+                success: function (result) {
+                    if (result['data']) {
+                        window.location.reload();
+                    } else {
+                        layui.layer.msg(result['message']);
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+</html>

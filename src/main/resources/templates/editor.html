@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--    <title>新建</title>-->
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+
+    <script src="/lib/jquery/index.js"></script>
+    <link href="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jqueryui/1.12.1/jquery-ui.js"></script>
+
+    <script src="/static/node_modules/editor.md/editormd.min.js"></script>
+    <link rel="stylesheet" href="/static/node_modules/editor.md/css/editormd.min.css" />
+</head>
+<style>
+    .tag {
+        background-color: #e9e9e9;
+        margin: 0.3rem;
+        padding: 0.3rem;
+        border-radius: 8px;
+    }
+
+    #save:hover {
+        background-color: #e9e9e9;
+        cursor: pointer;
+    }
+</style>
+<body>
+<div class="layui-container" style="margin-left: 0;margin-right: 0;width: 100%">
+    <div class="layui-row" style="padding-top: 0.5rem;padding-bottom: 0.5rem">
+        <div class="layui-col-lg3 ">
+            <label class="">标题&nbsp;</label>
+            <input type="text" id="title" required placeholder="请输入文章标题" autocomplete="off"
+                   style="display: inline;width: 16rem;height: 1.2rem">
+            <label id="titleCheck" hidden="hidden" style="color: red"></label>
+        </div>
+        <div class="layui-col-lg4">
+            <label>标签</label>
+            <span id="tags">
+            </span>
+            <i id="addTag" style="display: inline" class="fa fa-plus" aria-hidden="true"></i>
+        </div>
+        <div class="layui-col-lg5">
+            <label class="">分类</label>
+            <span id="categories">
+                <span hidden="hidden">head</span>
+            </span>
+            <i id="addCategories" style="display: inline" class="fa fa-plus" aria-hidden="true"></i>
+            <i id="save" style="display: inline; position: absolute; right: 1rem; font-size: 1.3rem"
+               class="fa fa-floppy-o" aria-hidden="true"></i>
+        </div>
+        <span hidden="hidden" id="dateTime"></span>
+    </div>
+</div>
+
+<div id="editor">
+    <textarea id="mdContent" style="display:none;" th:text="${content}"></textarea>
+</div>
+</body>
+<script src="/static/layui/layui.all.js"></script>
+<script>
+    var editor = editormd("editor", {
+        path: "/static/node_modules/editor.md/lib/",
+        imageUpload: true, //开启图片上传
+        imageUploadURL: '/image/upload', //图片上传后台地址
+        onload: function() {
+            // 引入插件 执行监听方法
+            editormd.loadPlugin("/static/node_modules/editor.md/plugins/image-handle-paste/image-handle-paste", function(){
+                editor.imagePaste();
+            });
+        }
+
+    });
+
+    $("#title").blur(function () {
+        var value = $(this).val().trim();
+        var titleCheck = $("#titleCheck");
+        if (value === "") {
+            titleCheck.text("标题不能为空!");
+            titleCheck.toggle();
+            return;
+        }
+        $.ajax({
+            url: "/blog/containsTitle?title=" + value,
+            success: function (result) {
+                if (result['data']) {
+                    titleCheck.text(result['message']);
+                    titleCheck.show();
+                } else {
+                    titleCheck.hide();
+                }
+            }
+        });
+    });
+
+    /**
+     * 在父元素下面创建一个输入框, 初始值为原来父标签的text
+     * 当输入框失去焦点时删除输入框,并将value填入父标签的text
+     * @param father 父标签的JQuery对象
+     */
+    function createInput(father) {
+        // 根据父元素的text创建输入框
+        var input = $("<input style='width: 5rem;' type='text' value='" + father.text().trim() + "'/>");
+
+        /**
+         *  当输入框失去焦点时将value填入父标签的text
+         */
+        function fun_blur() {
+            var val = input.val();
+            if (val === "") {
+                father.html("&nbsp;&nbsp;&nbsp;&nbsp;");
+            } else {
+                father.text(val);
+            }
+        };
+        input.blur(fun_blur);
+        // 当输入回车时
+        input.keypress(function (event) {
+            if (event.keyCode === 13) {
+                fun_blur();
+            }
+        });
+        father.html(input);
+        // 创建input标签时焦点到输入框
+        input.focus();
+        return input;
+    };
+
+    function addTag(text) {
+        if (text === undefined) {
+            text = '&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+        var tag = $('<span class="tag">' + text + '</span>');
+        tag.on("dblclick", function () {
+            createInput(tag);
+        });
+        // 鼠标悬停时显示叉
+        tag.hover(function () {
+            var remove = $("<i class=\"fa fa-times\" aria-hidden=\"true\"></i>");
+            remove.on("click", function () {
+                $(this).parent().remove();
+            });
+            $(this).append(remove);
+        }, function () {
+            $(this).find("i").remove();
+        });
+        $("#tags").append(tag);
+        // 添加一个新标签时默认生成输入框
+        var input = createInput(tag);
+        input.autocomplete({
+            minLength: 2,
+            source: "/blog/allTags"
+        });
+        return input;
+    }
+
+    $("#addTag").on("click", function () {
+        addTag().focus();
+    });
+
+    function addCategory(text) {
+        if (text === undefined) {
+            text = '&nbsp;&nbsp;&nbsp;&nbsp;';
+        }
+        var categories = $('<span class="tag">' + text + '</span>');
+        categories.on("dblclick", function () {
+            createInput(categories);
+        });
+        // 鼠标悬停时显示叉
+        categories.hover(function () {
+            var remove = $("<i class=\"fa fa-times\" aria-hidden=\"true\"></i>");
+            remove.on("click", function () {
+                var parent = $(this).parent();
+                parent.nextAll().remove();
+                parent.remove();
+            });
+            $(this).append(remove);
+        }, function () {
+            $(this).find("i").remove();
+        });
+        $("#categories").append(categories);
+        // 添加一个新标签时默认生成输入框
+        var input = createInput(categories);
+        input.autocomplete({
+            minLength: 2,
+            source: "/blog/allCategories?name=" + input.parent().prev().text()
+        });
+        return input;
+    }
+
+    $("#addCategories").click(function () {
+        addCategory().focus();
+    });
+
+    // 存储按钮事件
+    $("#save").click(function (ev) {
+        var markdown = {};
+        // 获取标题
+        markdown['title'] = $("#title").val();
+        var tags = [];
+        var tagLabels = $("#tags").children();
+        for (var i = 0; i < tagLabels.length; i++) {
+            tags.push($(tagLabels.get(i)).text());
+        }
+        markdown['tags'] = tags;
+        // 获取分类
+        var categories = [];
+        var categorieLabels = $("#categories").children();
+        for (var i = 1; i < categorieLabels.length; i++) {
+            categories.push($(categorieLabels.get(i)).text());
+        }
+        markdown["categories"] = categories;
+        // 获取时间
+        var date = $("#dateTime").text().trim();
+        if (date !== undefined && date !== "") {
+            markdown['date'] = date;
+        }
+        // 获取文章内容
+        markdown["content"] = $("#mdContent").text().trim();
+        $.ajax({
+            url: "/blog/save/markdown",
+            method: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify(markdown),
+            success: function (result) {
+                layui.layer.msg(result['message']);
+            }
+        });
+    });
+
+    window.onbeforeunload = function (event) {
+        return '您可能有数据没有保存';
+    };
+
+    function inputToText(input) {
+        var val = input.val();
+        var father = input.parent();
+        if (val === "") {
+            father.html("&nbsp;&nbsp;&nbsp;&nbsp;");
+        } else {
+            father.text(val);
+        }
+    }
+
+    function setTitle(title) {
+        $("#title").val(title);
+    }
+
+    function setTags(tagList) {
+        for (var i = 0; i < tagList.length; i++) {
+            inputToText(addTag(tagList[i]));
+        }
+    }
+
+    function setCategories(categoryList) {
+        for (var i = 0; i < categoryList.length; i++) {
+            inputToText(addCategory(categoryList[i]));
+        }
+    }
+
+    function setDate(date) {
+        $("#dateTime").text(date);
+    }
+
+    function setContent(text) {
+        $("#mdContent").text(text)
+    }
+
+</script>
+</html>

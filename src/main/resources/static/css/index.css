@@ -1,0 +1,35 @@
+.background {
+    background: image("../images/UNADJUSTEDNONRAW_thumb_1b.jpg");
+}
+
+.nav {
+    background-image: url("../images/UNADJUSTEDNONRAW_thumb_1b.jpg");
+    height: 500px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-attachment: fixed;
+}
+.site-info{
+    margin: 0.8rem;
+    color: inherit;
+}
+.title {
+    padding: 10rem 1rem 0rem;
+    font-size: 2.5rem;
+}
+
+.subtitle{
+    font-size: 1.8rem;
+}
+
+.social-icon{
+    margin: 0.5rem;
+    font-size: 1.5rem;
+    color: inherit;
+}
+
+.site-nav a {
+    margin: 0.5rem;
+    color: inherit;
+    font-size: 1.3rem;
+}

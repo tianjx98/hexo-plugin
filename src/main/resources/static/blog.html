@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="node_modules/editor.md/css/editormd.min.css" />
+    <link rel="stylesheet" href="./layui/css/layui.css">
+</head>
+<body>
+<div id="editor">
+    <!-- Tips: Editor.md can auto append a `<textarea>` tag -->
+    <textarea style="display:none;">### Hello Editor.md !</textarea>
+</div>
+<!--<script src="node_modules/editor.md/jquery.min.js"></script>-->
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="node_modules/editor.md/editormd.js"></script>
+<script src="./layui/layui.js"></script>
+<script type="text/javascript">
+    $(function() {
+        var editor = editormd("editor", {
+            width: "100%",
+            height: "100%",
+            markdown: "xxxx",     // dynamic set Markdown text
+            // saveHTMLToTextarea: true,
+            path: "node_modules/editor.md/lib/",  // Autoload modules mode, codemirror, marked... dependents libs path
+            imageUpload    : true,
+            imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "./image/upload",
+        });
+        editor.fullscreen();
+    });
+    window.onbeforeunload = function (ev) {
+        return "12";
+    };
+</script>
+</body>
+</html>
