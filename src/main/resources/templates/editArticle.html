@@ -11,12 +11,11 @@
     $.ajax({
         url: "/blog/get/[[${name}]]",
         success:function (result) {
-            console.log(result);
             setTitle(result['title']);
             setTags(result['tags']);
             setCategories(result['categories']);
             setDate(result['date']);
-            setContent(result['content']);
+            // setContent(result['content']);
         }
     });
 </script>

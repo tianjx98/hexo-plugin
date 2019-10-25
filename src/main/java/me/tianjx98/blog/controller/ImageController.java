@@ -23,5 +23,5 @@ public class ImageController {
     @RequestMapping("/upload")
     public ImageUploadMessage upload(@RequestParam("editormd-image-file") MultipartFile multipartFile) {
         return imageService.upload(multipartFile);
-    }
+}
 }

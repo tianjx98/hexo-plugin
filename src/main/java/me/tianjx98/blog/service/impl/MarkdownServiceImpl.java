@@ -38,7 +38,7 @@ public class MarkdownServiceImpl implements MarkdownService {
     @Override
     public String read(String name) {
         try {
-            FileReadWriteUtils.read(hexoSource + name + ".md");
+            return FileReadWriteUtils.read(hexoSource + name + ".md");
         } catch (IOException e) {
             e.printStackTrace();
         }

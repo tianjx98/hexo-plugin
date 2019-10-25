@@ -112,7 +112,7 @@ public class PagesController {
     public ModelAndView edit(@PathVariable("name") String name, String uri) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("name", name);
-        //modelAndView.addObject("content", markdownService.read(name));
+        modelAndView.addObject("content", markdownService.readAsMarkdown(name).getContent());
         //modelAndView.addObject("uri", uri);
         modelAndView.setViewName("editArticle");
         return modelAndView;

@@ -200,14 +200,20 @@
         var tags = [];
         var tagLabels = $("#tags").children();
         for (var i = 0; i < tagLabels.length; i++) {
-            tags.push($(tagLabels.get(i)).text());
+            var t = $(tagLabels.get(i)).text().trim();
+            if (t !== "") {
+                tags.push(t);
+            }
         }
         markdown['tags'] = tags;
         // 获取分类
         var categories = [];
         var categorieLabels = $("#categories").children();
         for (var i = 1; i < categorieLabels.length; i++) {
-            categories.push($(categorieLabels.get(i)).text());
+            var c=$(categorieLabels.get(i)).text().trim();
+            if (c !== "") {
+                categories.push(c);
+            }
         }
         markdown["categories"] = categories;
         // 获取时间
